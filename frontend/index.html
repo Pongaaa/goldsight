@@ -29,12 +29,18 @@
             background: linear-gradient(90deg, #1f2937 0%, #374151 100%);
             border: 1px solid #4b5563;
         }
+
+        /* Tùy chỉnh thanh cuộn cho bảng */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #1a1a1a; }
+        ::-webkit-scrollbar-thumb { background: #444; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #ca8a04; }
     </style>
 </head>
 
 <body class="bg-[#0a0a0a] text-slate-200 selection:bg-yellow-500 selection:text-black">
 
-    <header class="text-center py-16 bg-gradient-to-b from-yellow-900/10 to-transparent">
+    <header class="text-center py-12 bg-gradient-to-b from-yellow-900/10 to-transparent">
         <div class="inline-flex items-center justify-center gap-3 mb-4">
             <i class="fa-solid fa-layer-group text-yellow-500 text-4xl"></i>
             <h1 class="text-6xl font-extrabold tracking-tighter text-white">
@@ -44,23 +50,24 @@
         <p class="text-gray-400 text-lg font-light tracking-wide">Nền tảng phân tích giá vàng & Đầu tư thông minh</p>
     </header>
 
-    <main class="max-w-6xl mx-auto px-4 space-y-20 mb-20">
+    <main class="max-w-6xl mx-auto px-4 space-y-16 mb-20">
 
-        <section class="card-glow rounded-3xl p-10 text-center relative overflow-hidden">
+        <section class="card-glow rounded-3xl p-8 text-center relative overflow-hidden">
             <div class="absolute top-0 right-0 p-4 opacity-10">
                 <i class="fa-solid fa-chart-line text-9xl text-yellow-500"></i>
             </div>
             
-            <h2 class="text-3xl font-bold text-white mb-6">
+            <h2 class="text-2xl font-bold text-white mb-4">
                 Giá vàng <span class="text-yellow-400">XAUUSD</span> (Thế giới)
             </h2>
 
             <div>
-                <p class="text-gray-400 text-sm uppercase tracking-widest mb-2">Giá giao ngay hiện tại</p>
-                <div id="xauusd-price" class="text-7xl font-extrabold text-yellow-400 drop-shadow-lg">
+                <p class="text-gray-400 text-xs uppercase tracking-widest mb-2">Giá giao ngay hiện tại (USD/oz)</p>
+                <div id="xauusd-price" class="text-6xl font-extrabold text-yellow-400 drop-shadow-lg flex justify-center items-center gap-4">
                     <i class="fa-solid fa-spinner fa-spin text-4xl"></i>
                 </div>
-                <p id="xauusd-time" class="text-sm text-gray-500 mt-4 font-mono">Đang kết nối dữ liệu...</p>
+                <div id="xauusd-change" class="text-lg font-bold mt-2"></div>
+                <p id="xauusd-time" class="text-xs text-gray-500 mt-4 font-mono">Đang kết nối dữ liệu...</p>
             </div>
         </section>
 
@@ -73,12 +80,13 @@
             </div>
 
             <div class="overflow-x-auto rounded-2xl border border-gray-800 shadow-2xl">
-                <table class="w-full min-w-[600px]">
+                <table class="w-full min-w-[800px]">
                     <thead class="bg-gray-900 text-gray-400 text-xs uppercase font-semibold tracking-wider">
                         <tr>
-                            <th class="p-5 text-left">Thương hiệu / Loại</th>
-                            <th class="p-5 text-right text-green-500">Giá Mua vào (VND)</th>
-                            <th class="p-5 text-right text-yellow-500">Giá Bán ra (VND)</th>
+                            <th class="p-4 text-left">Đơn vị (Đồng/Lượng)</th>
+                            <th class="p-4 text-right text-green-500">Giá Mua</th>
+                            <th class="p-4 text-right text-yellow-500">Giá Bán</th>
+                            <th class="p-4 text-right text-gray-400">Chênh lệch</th>
                         </tr>
                     </thead>
                     <tbody id="gold-table" class="bg-[#111] divide-y divide-gray-800 text-sm font-medium">
@@ -95,32 +103,26 @@
                 </h2>
             </div>
 
-            <div class="tradingview-widget-container rounded-2xl overflow-hidden border border-gray-800 shadow-2xl" 
-                 style="width: 80%; height: 80vh; margin: 0 auto;">
-                
+            <div class="tradingview-widget-container rounded-2xl overflow-hidden border border-gray-800 shadow-2xl mx-auto" 
+                 style="width: 80%; height: 600px;">
                 <div class="tradingview-widget-container__widget" style="width: 100%; height: 100%;"></div>
-                
                 <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
                 {
                     "autosize": true,
                     "symbol": "OANDA:XAUUSD",
-                    "interval": "15",
+                    "interval": "60",
                     "timezone": "Asia/Ho_Chi_Minh",
                     "theme": "dark",
                     "style": "1",
                     "locale": "vi_VN",
-                    "hide_top_toolbar": false,
-                    "hide_side_toolbar": false,
-                    "withdateranges": true,
-                    "allow_symbol_change": false,
                     "enable_publishing": false,
-                    "studies": ["Volume@tv-basicstudies"],
+                    "hide_top_toolbar": false,
+                    "allow_symbol_change": false,
                     "support_host": "https://www.tradingview.com"
                 }
                 </script>
             </div>
         </section>
-
         <section>
             <div class="flex items-center gap-3 mb-6">
                 <div class="w-1 h-8 bg-yellow-500 rounded-full"></div>
@@ -317,47 +319,107 @@
             </div>
         </div>
     </footer>
-
     <script>
+        // --- CẤU HÌNH ---
+        const API_URL = "https://goldsight-jwvk.onrender.com/gia-vang";
+
         // Hàm định dạng tiền tệ
-        const formatMoney = (price) => {
-            return new Intl.NumberFormat('vi-VN').format(price);
+        const formatMoney = (price, currency = 'VND') => {
+            if (!price) return "N/A";
+            const options = currency === 'USD' 
+                ? { style: 'currency', currency: 'USD' } 
+                : { style: 'currency', currency: 'VND' };
+            return new Intl.NumberFormat('vi-VN', options).format(price);
+        }
+
+        // Hàm tạo HTML hiển thị tăng/giảm (Dùng cho cả Mua và Bán)
+        const getTrendHtml = (change) => {
+            if (!change || change === 0) return '';
+            const isUp = change > 0;
+            const colorClass = isUp ? 'text-green-500' : 'text-red-500';
+            const bgClass = isUp ? 'bg-green-500/10' : 'bg-red-500/10';
+            const icon = isUp ? '▲' : '▼';
+            
+            // Format số change, bỏ ký tự '₫' để gọn
+            const formattedChange = formatMoney(Math.abs(change)).replace('₫','').trim();
+
+            return `<span class="${colorClass} ${bgClass} text-[10px] ml-2 px-1 rounded font-bold inline-block">
+                        ${icon} ${formattedChange}
+                    </span>`;
         }
 
         async function fetchPrices() {
             try {
-                // Gọi API từ Backend Python (nhớ bật backend!)
-                const res = await fetch("http://127.0.0.1:8000/gia-vang");
-                const data = await res.json(); // API trả về mảng trực tiếp, không cần .data
+                // Gọi API
+                const res = await fetch(API_URL);
+                const jsonData = await res.json();
 
-                // 1. Cập nhật giá XAUUSD (Giả sử trong list có item brand="XAUUSD" hoặc ta lấy cái đầu tiên làm mẫu)
-                // Lưu ý: Crawler của bạn hiện tại crawl SJC, PNJ... nếu chưa có XAUUSD thì ta dùng tạm SJC làm giá "Big Number"
-                // Hoặc bạn có thể hardcode số để test nếu backend chưa trả về XAUUSD
+                // --- XỬ LÝ DỮ LIỆU ---
+                let pricesObj = {};
                 
-                // Demo logic lấy giá SJC để hiển thị lên số to (vì crawler hiện tại là web VN)
-                const sjc = data.find(i => i.brand.includes("SJC"));
-                if (sjc) {
-                    document.getElementById("xauusd-price").innerText = formatMoney(sjc.sell.price) + " đ";
-                    document.getElementById("xauusd-time").innerText = "Cập nhật lúc: " + sjc.updated_at;
+                // Kiểm tra cấu trúc dữ liệu trả về từ Render
+                if (jsonData.raw_response && jsonData.raw_response.prices) {
+                    pricesObj = jsonData.raw_response.prices;
+                } else if (jsonData.data && Array.isArray(jsonData.data)) {
+                    jsonData.data.forEach(item => {
+                        pricesObj[item.code] = item;
+                    });
                 }
 
-                // 2. Render Bảng Giá
+                // 1. CẬP NHẬT GIÁ VÀNG THẾ GIỚI (XAUUSD)
+                const worldGold = pricesObj["XAUUSD"];
+                if (worldGold) {
+                    document.getElementById("xauusd-price").innerHTML = `
+                        ${formatMoney(worldGold.buy, 'USD')}
+                    `;
+                    
+                    const change = worldGold.change_buy || 0;
+                    const changeColor = change >= 0 ? 'text-green-500' : 'text-red-500';
+                    const changeIcon = change >= 0 ? '<i class="fa-solid fa-arrow-trend-up"></i>' : '<i class="fa-solid fa-arrow-trend-down"></i>';
+                    
+                    document.getElementById("xauusd-change").innerHTML = `
+                        <span class="${changeColor} bg-gray-900 px-3 py-1 rounded-full border border-gray-700">
+                            ${changeIcon} ${change.toFixed(2)} USD
+                        </span>
+                    `;
+
+                    const timeUpdate = jsonData.raw_response ? (jsonData.raw_response.time + " " + jsonData.raw_response.date) : "Vừa xong";
+                    document.getElementById("xauusd-time").innerText = "Cập nhật lúc: " + timeUpdate;
+                }
+
+                // 2. CẬP NHẬT BẢNG GIÁ VÀNG TRONG NƯỚC
                 const tbody = document.getElementById("gold-table");
                 tbody.innerHTML = "";
 
-                data.forEach(item => {
+                Object.entries(pricesObj).forEach(([code, item]) => {
+                    // Bỏ qua XAUUSD và các item lỗi không có tên
+                    if (code === 'XAUUSD' || !item.name) return;
+
+                    // Xử lý mũi tên tăng giảm cho cả Mua và Bán
+                    const buyTrend = getTrendHtml(item.change_buy);
+                    const sellTrend = getTrendHtml(item.change_sell);
+
+                    const spread = (item.sell - item.buy);
+
                     const row = `
-                    <tr class="hover:bg-gray-800/50 transition duration-200 group">
-                        <td class="p-5 font-semibold text-gray-300 group-hover:text-white">
-                            ${item.brand}
-                            ${item.sell.trend === 'up' ? '<span class="ml-2 text-[10px] bg-green-500/20 text-green-500 px-1 rounded">▲</span>' : ''}
-                            ${item.sell.trend === 'down' ? '<span class="ml-2 text-[10px] bg-red-500/20 text-red-500 px-1 rounded">▼</span>' : ''}
+                    <tr class="hover:bg-gray-800/50 transition duration-200 border-b border-gray-800/50 last:border-0">
+                        <td class="p-3">
+                            <div class="font-bold text-white text-base">${item.name}</div>
+                            <div class="text-gray-500 text-xs font-mono mt-0.5">${code}</div>
                         </td>
-                        <td class="p-5 text-right font-mono text-gray-400">
-                            ${formatMoney(item.buy.price)}
+                        
+                        <td class="p-3 text-right font-mono text-white">
+                            ${formatMoney(item.buy)}
+                            <div class="mt-0.5">${buyTrend}</div>
                         </td>
-                        <td class="p-5 text-right font-mono font-bold text-yellow-400 text-lg">
-                            ${formatMoney(item.sell.price)}
+                        
+                        <td class="p-3 text-right font-mono text-white">
+                            ${formatMoney(item.sell)}
+                            <div class="mt-0.5">${sellTrend}</div>
+                        </td>
+                        
+                        <td class="p-3 text-right font-mono text-gray-400 text-sm">
+                            ${formatMoney(spread)}
                         </td>
                     </tr>`;
                     tbody.innerHTML += row;
@@ -365,13 +427,14 @@
 
             } catch (error) {
                 console.error("Lỗi kết nối Backend:", error);
+                document.getElementById("xauusd-time").innerText = "Đang kết nối lại...";
             }
         }
 
         // Chạy lần đầu
         fetchPrices();
-        // Cập nhật mỗi 10 giây
-        setInterval(fetchPrices, 10000);
+        // Tự động cập nhật mỗi 30 giây
+        setInterval(fetchPrices, 30000);
     </script>
 
 </body>
