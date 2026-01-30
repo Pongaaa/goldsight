@@ -1,441 +1,300 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GoldInsight - Phân Tích Đầu Tư</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <!DOCTYPE html>
+    <html lang="vi">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>GoldInsight - Phân Tích Đầu Tư</title>
+        <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 576 512'%3E%3Cpath fill='%23eab308' d='M265.8 47.9c13.7-10.4 32.7-10.4 46.4 0L557.4 235.1c17.9 13.6 20.3 39 5.3 55.4l-31 33.8c-12.7 13.9-33.8 15.7-48.9 4.2L288 180.2 93.2 328.5c-15.1 11.5-36.2 9.7-48.9-4.2l-31-33.8c-15-16.4-12.6-41.8 5.3-55.4L265.8 47.9zM22.8 288c-19.7 0-37.5 10.3-46.7 27.2s-7.8 37.1 3.5 53.6L129 458.7c16.3 23.6 42.8 37.3 71 37.3H376c28.2 0 54.7-13.7 71-37.3l149.3-89.8c11.3-16.6 12.7-36.7 3.5-53.6s-27-27.2-46.7-27.2H22.8z'/%3E%3C/svg%3E">
+        <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='%23eab308' d='M12.4 108c-16.6 7.5-16.6 32.5 0 40l232.9 105.7c6.8 3.1 14.5 3.1 21.3 0l232.9-105.7c16.6-7.5 16.6-32.5 0-40L266.6 2.3c-6.8-3.1-14.5-3.1-21.3 0L12.4 108zM256 295.1L40.4 197.3l-18 8.1c-16.6 7.5-16.6 32.5 0 40l232.9 105.7c6.8 3.1 14.5 3.1 21.3 0l232.9-105.7c16.6-7.5 16.6-32.5 0-40l-18-8.1L256 295.1zM256 439.1L40.4 341.3l-18 8.1c-16.6 7.5-16.6 32.5 0 40l232.9 105.7c6.8 3.1 14.5 3.1 21.3 0l232.9-105.7c16.6-7.5 16.6-32.5 0-40l-18-8.1L256 439.1z'/%3E%3C/svg%3E">
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="./style.css">
 
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-        
-        /* Hiệu ứng Glow cho các Card */
-        .card-glow {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(234, 179, 8, 0.2);
-            transition: all 0.3s ease;
-        }
-        .card-glow:hover {
-            border-color: rgba(234, 179, 8, 0.6);
-            box-shadow: 0 0 30px rgba(234, 179, 8, 0.15);
-            transform: translateY(-2px);
-        }
+    </head>
 
-        /* Badge AI Advisor */
-        .ai-badge {
-            background: linear-gradient(90deg, #1f2937 0%, #374151 100%);
-            border: 1px solid #4b5563;
-        }
+    <body class="bg-[#0a0a0a] text-slate-200 selection:bg-yellow-500 selection:text-black">
 
-        /* Tùy chỉnh thanh cuộn cho bảng */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: #1a1a1a; }
-        ::-webkit-scrollbar-thumb { background: #444; border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: #ca8a04; }
-    </style>
-</head>
-
-<body class="bg-[#0a0a0a] text-slate-200 selection:bg-yellow-500 selection:text-black">
-
-    <header class="text-center py-12 bg-gradient-to-b from-yellow-900/10 to-transparent">
-        <div class="inline-flex items-center justify-center gap-3 mb-4">
-            <i class="fa-solid fa-layer-group text-yellow-500 text-4xl"></i>
-            <h1 class="text-6xl font-extrabold tracking-tighter text-white">
-                Gold<span class="text-yellow-500">Insight</span>
-            </h1>
-        </div>
-        <p class="text-gray-400 text-lg font-light tracking-wide">Nền tảng phân tích giá vàng & Đầu tư thông minh</p>
-    </header>
-
-    <main class="max-w-6xl mx-auto px-4 space-y-16 mb-20">
-
-        <section class="card-glow rounded-3xl p-8 text-center relative overflow-hidden">
-            <div class="absolute top-0 right-0 p-4 opacity-10">
-                <i class="fa-solid fa-chart-line text-9xl text-yellow-500"></i>
+        <header class="text-center py-24 bg-gradient-to-b from-yellow-900/10 to-transparent">
+            <div class="inline-flex items-center justify-center gap-3 mb-4">
+                <i class="fa-solid fa-layer-group text-yellow-500 text-4xl"></i>
+                <h1 class="text-6xl font-extrabold tracking-tighter text-white">
+                    Gold<span class="text-yellow-500">Insight</span>
+                </h1>
             </div>
-            
-            <h2 class="text-2xl font-bold text-white mb-4">
-                Giá vàng <span class="text-yellow-400">XAUUSD</span> (Thế giới)
-            </h2>
+            <p class="text-gray-400 text-lg font-light tracking-wide">Nền tảng phân tích giá vàng & Đầu tư thông minh</p>
+        </header>
 
-            <div>
-                <p class="text-gray-400 text-xs uppercase tracking-widest mb-2">Giá giao ngay hiện tại (USD/oz)</p>
-                <div id="xauusd-price" class="text-6xl font-extrabold text-yellow-400 drop-shadow-lg flex justify-center items-center gap-4">
-                    <i class="fa-solid fa-spinner fa-spin text-4xl"></i>
+        <main class="max-w-6xl mx-auto px-4 space-y-32 mb-20">
+
+            <section class="card-glow rounded-3xl p-8 text-center relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-4 opacity-10">
+                    <i class="fa-solid fa-chart-line text-9xl text-yellow-500"></i>
                 </div>
-                <div id="xauusd-change" class="text-lg font-bold mt-2"></div>
-                <p id="xauusd-time" class="text-xs text-gray-500 mt-4 font-mono">Đang kết nối dữ liệu...</p>
-            </div>
-        </section>
-
-        <section>
-            <div class="flex items-center gap-3 mb-6">
-                <div class="w-1 h-8 bg-yellow-500 rounded-full"></div>
-                <h2 class="text-3xl font-bold text-white">
-                    Giá vàng <span class="text-yellow-400">Trong Nước</span>
-                </h2>
-            </div>
-
-            <div class="overflow-x-auto rounded-2xl border border-gray-800 shadow-2xl">
-                <table class="w-full min-w-[800px]">
-                    <thead class="bg-gray-900 text-gray-400 text-xs uppercase font-semibold tracking-wider">
-                        <tr>
-                            <th class="p-4 text-left">Đơn vị (Đồng/Lượng)</th>
-                            <th class="p-4 text-right text-green-500">Giá Mua</th>
-                            <th class="p-4 text-right text-yellow-500">Giá Bán</th>
-                            <th class="p-4 text-right text-gray-400">Chênh lệch</th>
-                        </tr>
-                    </thead>
-                    <tbody id="gold-table" class="bg-[#111] divide-y divide-gray-800 text-sm font-medium">
-                        </tbody>
-                </table>
-            </div>
-        </section>
-
-        <section>
-            <div class="flex items-center gap-3 mb-6">
-                <div class="w-1 h-8 bg-yellow-500 rounded-full"></div>
-                <h2 class="text-3xl font-bold text-white">
-                    Biểu đồ <span class="text-yellow-400">Kỹ Thuật</span>
-                </h2>
-            </div>
-
-            <div class="tradingview-widget-container rounded-2xl overflow-hidden border border-gray-800 shadow-2xl mx-auto" 
-                 style="width: 80%; height: 600px;">
-                <div class="tradingview-widget-container__widget" style="width: 100%; height: 100%;"></div>
-                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
-                {
-                    "autosize": true,
-                    "symbol": "OANDA:XAUUSD",
-                    "interval": "60",
-                    "timezone": "Asia/Ho_Chi_Minh",
-                    "theme": "dark",
-                    "style": "1",
-                    "locale": "vi_VN",
-                    "enable_publishing": false,
-                    "hide_top_toolbar": false,
-                    "allow_symbol_change": false,
-                    "support_host": "https://www.tradingview.com"
-                }
-                </script>
-            </div>
-        </section>
-        <section>
-            <div class="flex items-center gap-3 mb-6">
-                <div class="w-1 h-8 bg-yellow-500 rounded-full"></div>
-                <h2 class="text-3xl font-bold text-white">
-                    Chỉ báo <span class="text-yellow-400">Đầu Tư Cơ Bản</span>
-                </h2>
-            </div>
-
-            <div class="grid md:grid-cols-3 gap-6">
-                <div class="card-glow rounded-2xl p-6 relative group">
-                    <div class="absolute top-4 right-4 text-gray-700 group-hover:text-yellow-500 transition">
-                        <i class="fa-solid fa-wave-square text-3xl"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-white mb-1">RSI <span class="text-xs font-normal text-gray-500">(Relative Strength Index)</span></h3>
-                    <div class="h-1 w-10 bg-yellow-500 rounded full mb-4"></div>
-                    <ul class="space-y-2 text-sm text-gray-300">
-                        <li class="flex items-start gap-2">
-                            <i class="fa-solid fa-arrow-down text-red-500 mt-1"></i>
-                            <span><strong>&gt; 70 (Quá mua):</strong> Khả năng giá sẽ đảo chiều giảm.</span>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <i class="fa-solid fa-arrow-up text-green-500 mt-1"></i>
-                            <span><strong>&lt; 30 (Quá bán):</strong> Khả năng giá sẽ đảo chiều tăng.</span>
-                        </li>
-                    </ul>
-                </div>
-
-                <div class="card-glow rounded-2xl p-6 relative group">
-                    <div class="absolute top-4 right-4 text-gray-700 group-hover:text-yellow-500 transition">
-                        <i class="fa-solid fa-bezier-curve text-3xl"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-white mb-1">MACD <span class="text-xs font-normal text-gray-500">(Trend Following)</span></h3>
-                    <div class="h-1 w-10 bg-yellow-500 rounded full mb-4"></div>
-                    <ul class="space-y-2 text-sm text-gray-300">
-                        <li class="flex items-start gap-2">
-                            <i class="fa-solid fa-circle-up text-green-500 mt-1"></i>
-                            <span><strong>Cắt lên Signal:</strong> Tín hiệu MUA (Xu hướng tăng).</span>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <i class="fa-solid fa-circle-down text-red-500 mt-1"></i>
-                            <span><strong>Cắt xuống Signal:</strong> Tín hiệu BÁN (Xu hướng giảm).</span>
-                        </li>
-                    </ul>
-                </div>
-
-                <div class="card-glow rounded-2xl p-6 relative group">
-                    <div class="absolute top-4 right-4 text-gray-700 group-hover:text-yellow-500 transition">
-                        <i class="fa-solid fa-chart-area text-3xl"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-white mb-1">MA Trend <span class="text-xs font-normal text-gray-500">(Moving Average)</span></h3>
-                    <div class="h-1 w-10 bg-yellow-500 rounded full mb-4"></div>
-                    <ul class="space-y-2 text-sm text-gray-300">
-                        <li class="flex items-start gap-2">
-                            <i class="fa-solid fa-caret-up text-green-500 mt-1"></i>
-                            <span><strong>Giá nằm trên dây MA:</strong> Xu hướng TĂNG dài hạn.</span>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <i class="fa-solid fa-caret-down text-red-500 mt-1"></i>
-                            <span><strong>Giá nằm dưới dây MA:</strong> Xu hướng GIẢM dài hạn.</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-
-        <section>
-            <div class="flex justify-center mb-8">
-                <div class="ai-badge rounded-full px-6 py-2 flex items-center gap-2 shadow-lg">
-                    <i class="fa-solid fa-robot text-yellow-400"></i>
-                    <span class="font-bold text-white tracking-wide">AI Advisor</span>
-                </div>
-            </div>
-
-            <div class="text-center mb-10">
-                <h2 class="text-4xl font-bold text-white mb-2">Nhận Định <span class="text-yellow-500">Hôm Nay</span></h2>
-                <p class="text-gray-500 text-sm">Phân tích tự động bởi trí tuệ nhân tạo dựa trên dữ liệu Big Data</p>
-            </div>
-
-            <div class="bg-[#111] border border-gray-800 rounded-3xl p-8 md:p-10 relative">
-                <div class="absolute left-0 top-10 bottom-10 w-1 bg-yellow-500 rounded-r-full"></div>
                 
-                <div class="pl-6">
-                    <h3 class="text-xl font-bold text-white flex items-center gap-3 mb-4">
-                        <span class="w-8 h-8 bg-yellow-500/20 rounded-lg flex items-center justify-center text-yellow-500">
-                            <i class="fa-solid fa-arrow-trend-up"></i>
-                        </span>
-                        Tổng Quan Thị Trường
-                    </h3>
+                <h2 class="text-2xl font-bold text-white mb-4">
+                    Giá vàng <span class="text-yellow-400"> Thế giới </span>
+                </h2>
+
+                <div>
+                    <p class="text-gray-400 text-xs uppercase tracking-widest mb-2">Giá giao ngay hiện tại (USD/oz)</p>
+                    <div id="xauusd-price" class="text-6xl font-extrabold text-yellow-400 drop-shadow-lg flex justify-center items-center gap-4">
+                        <i class="fa-solid fa-spinner fa-spin text-4xl"></i>
+                    </div>
+                    <div id="xauusd-change" class="text-lg font-bold mt-2"></div>
+                    <p id="xauusd-time" class="text-xs text-gray-500 mt-4 font-mono">Đang kết nối dữ liệu...</p>
+                </div>
+            </section>
+
+            <section>
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-1 h-8 bg-yellow-500 rounded-full"></div>
+                    <h2 class="text-3xl font-bold text-white">
+                        Giá vàng <span class="text-yellow-400">Trong Nước</span>
+                    </h2>
+                </div>
+
+                <div class="overflow-x-auto rounded-2xl border border-gray-800 shadow-2xl">
+                    <table class="w-full min-w-[800px]">
+                        <thead class="bg-gray-900 text-gray-400 text-xs uppercase font-semibold tracking-wider">
+                            <tr>
+                                <th class="p-4 text-left">Đơn vị (Đồng/Lượng)</th>
+                                <th class="p-4 text-right text-green-500">Giá Mua</th>
+                                <th class="p-4 text-right text-yellow-500">Giá Bán</th>
+                                <th class="p-4 text-right text-gray-400">Chênh lệch</th>
+                            </tr>
+                        </thead>
+                        <tbody id="gold-table" class="bg-[#111] divide-y divide-gray-800 text-sm font-medium">
+                            </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section>
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-1 h-8 bg-yellow-500 rounded-full"></div>
+                    <h2 class="text-3xl font-bold text-white">
+                        Biểu đồ <span class="text-yellow-400">Kỹ Thuật</span>
+                    </h2>
+                </div>
+
+                <div class="tradingview-widget-container rounded-2xl overflow-hidden border border-gray-800 shadow-2xl mx-auto" 
+                    style="width: 80%; height: 80vh;">
                     
-                    <div class="space-y-4 text-gray-300 leading-relaxed text-justify">
-                        <p>
-                            Thị trường vàng trong nước vào phiên hôm nay ghi nhận mức tăng nhẹ <strong>+0.82%</strong> đối với cả vàng SJC và nhẫn tròn trơn. 
-                            Mức chênh lệch mua bán duy trì ở biên độ an toàn (khoảng 2.000.000đ - 3.000.000đ), cho thấy thanh khoản đang ổn định.
-                        </p>
-                        <p>
-                            Trên thị trường thế giới, đồng USD đang có dấu hiệu suy yếu nhẹ sau báo cáo lạm phát, tạo đà hỗ trợ cho giá vàng giữ vững mốc trên 
-                            <strong>$2.600/oz</strong>. Tâm lý nhà đầu tư đang thận trọng chờ đợi các tin tức từ FED vào cuối tuần này.
-                        </p>
-                        <div class="bg-yellow-500/10 border border-yellow-500/20 p-4 rounded-xl mt-4">
-                            <strong class="text-yellow-400 block mb-1">Khuyến nghị sơ bộ:</strong>
-                            Đối với nhà đầu tư dài hạn, đây là vùng giá tích lũy phù hợp. Đối với giao dịch ngắn hạn (lướt sóng), cần cẩn trọng quan sát vùng kháng cự $2.650.
+                    <div class="tradingview-widget-container__widget" style="width: 80%; height: 80%;"></div>
+                    
+                    <script src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js"
+                        async>
+                    {
+                        "autosize": false,
+                        "height": 600,
+                        "symbol": "OANDA:XAUUSD",
+                        "interval": "15",
+                        "timezone": "Asia/Ho_Chi_Minh",
+                        "theme": "dark",
+                        "style": "1",
+                        "locale": "vi_VN",
+
+                        "hide_top_toolbar": false,
+                        "hide_side_toolbar": false,
+                        "withdateranges": true,
+
+                        "allow_symbol_change": false,
+                        "enable_publishing": false,
+
+                        "studies": ["Volume@tv-basicstudies"],
+
+                        "container_id": "tradingview_xau"
+                    }
+                    </script>
+                </div>
+            </section>
+
+            <section>
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-1 h-8 bg-yellow-500 rounded-full"></div>
+                    <h2 class="text-3xl font-bold text-white">
+                        Chỉ báo <span class="text-yellow-400">Đầu Tư Cơ Bản</span>
+                    </h2>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="card-glow rounded-2xl p-6 relative group">
+                        <div class="absolute top-4 right-4 text-gray-700 group-hover:text-yellow-500 transition">
+                            <i class="fa-solid fa-wave-square text-3xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-1">RSI <span class="text-xs font-normal text-gray-500">(Relative Strength Index)</span></h3>
+                        <div class="h-1 w-10 bg-yellow-500 rounded full mb-4"></div>
+                        <ul class="space-y-2 text-sm text-gray-300">
+                            <li class="flex items-start gap-2">
+                                <i class="fa-solid fa-arrow-down text-red-500 mt-1"></i>
+                                <span><strong>&gt; 70 (Quá mua):</strong> Khả năng giá sẽ đảo chiều giảm.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fa-solid fa-arrow-up text-green-500 mt-1"></i>
+                                <span><strong>&lt; 30 (Quá bán):</strong> Khả năng giá sẽ đảo chiều tăng.</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="card-glow rounded-2xl p-6 relative group">
+                        <div class="absolute top-4 right-4 text-gray-700 group-hover:text-yellow-500 transition">
+                            <i class="fa-solid fa-bezier-curve text-3xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-1">MACD <span class="text-xs font-normal text-gray-500">(Trend Following)</span></h3>
+                        <div class="h-1 w-10 bg-yellow-500 rounded full mb-4"></div>
+                        <ul class="space-y-2 text-sm text-gray-300">
+                            <li class="flex items-start gap-2">
+                                <i class="fa-solid fa-circle-up text-green-500 mt-1"></i>
+                                <span><strong>Cắt lên Signal:</strong> Tín hiệu MUA (Xu hướng tăng).</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fa-solid fa-circle-down text-red-500 mt-1"></i>
+                                <span><strong>Cắt xuống Signal:</strong> Tín hiệu BÁN (Xu hướng giảm).</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="card-glow rounded-2xl p-6 relative group">
+                        <div class="absolute top-4 right-4 text-gray-700 group-hover:text-yellow-500 transition">
+                            <i class="fa-solid fa-chart-area text-3xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-1">MA Trend <span class="text-xs font-normal text-gray-500">(Moving Average)</span></h3>
+                        <div class="h-1 w-10 bg-yellow-500 rounded full mb-4"></div>
+                        <ul class="space-y-2 text-sm text-gray-300">
+                            <li class="flex items-start gap-2">
+                                <i class="fa-solid fa-caret-up text-green-500 mt-1"></i>
+                                <span><strong>Giá nằm trên dây MA:</strong> Xu hướng TĂNG dài hạn.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fa-solid fa-caret-down text-red-500 mt-1"></i>
+                                <span><strong>Giá nằm dưới dây MA:</strong> Xu hướng GIẢM dài hạn.</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <div class="flex justify-center mb-8">
+                    <div class="ai-badge rounded-full px-6 py-2 flex items-center gap-2 shadow-lg">
+                        <i class="fa-solid fa-robot text-yellow-400"></i>
+                        <span class="font-bold text-white tracking-wide">AI Advisor</span>
+                    </div>
+                </div>
+
+                <div class="text-center mb-10">
+                    <h2 class="text-4xl font-bold text-white mb-2">Nhận Định <span class="text-yellow-500">Hôm Nay</span></h2>
+                    <p class="text-gray-500 text-sm">Phân tích tự động theo giá vàng trong nước</p>
+                </div>
+
+                <div class="bg-[#111] border border-gray-800 rounded-3xl p-8 md:p-10 relative">
+                    <div class="absolute left-0 top-10 bottom-10 w-1 bg-yellow-500 rounded-r-full"></div>
+                    
+                    <div class="pl-6">
+                        <h3 class="text-xl font-bold text-white flex items-center gap-3 mb-4">
+                            <span class="w-8 h-8 bg-yellow-500/20 rounded-lg flex items-center justify-center text-yellow-500">
+                                <i class="fa-solid fa-arrow-trend-up"></i>
+                            </span>
+                            Tổng Quan Thị Trường
+                        </h3>
+                        
+                        <div id="ai-analysis-container" class="space-y-4 text-gray-300 leading-relaxed text-justify">
+                            <p class="animate-pulse">Đang phân tích dữ liệu từ hệ thống...</p>
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <section>
-            <div class="flex items-center gap-3 mb-8">
-                <div class="w-1 h-8 bg-yellow-500 rounded-full"></div>
-                <h2 class="text-3xl font-bold text-white">
-                    Tin Tức <span class="text-yellow-400">Thị Trường</span>
-                </h2>
-            </div>
+            <section>
+                <div class="flex items-center gap-3 mb-8">
+                    <div class="w-1 h-8 bg-yellow-500 rounded-full"></div>
+                    <h2 class="text-3xl font-bold text-white">
+                        Tin Tức <span class="text-yellow-400">Thị Trường</span>
+                    </h2>
+                </div>
 
-            <div class="grid md:grid-cols-2 gap-6">
-                <div class="bg-[#111] border border-gray-800 p-6 rounded-2xl hover:border-yellow-500/50 transition cursor-pointer group">
-                    <div class="flex gap-2 mb-3">
-                        <span class="bg-yellow-500/20 text-yellow-500 text-xs px-2 py-1 rounded font-bold">Giá vàng</span>
-                        <span class="bg-gray-800 text-gray-400 text-xs px-2 py-1 rounded">Thế giới</span>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-[#111] border border-gray-800 p-6 rounded-2xl hover:border-yellow-500/50 transition cursor-pointer group">
+                        <div class="flex gap-2 mb-3">
+                            <span class="bg-yellow-500/20 text-yellow-500 text-xs px-2 py-1 rounded font-bold">Giá vàng</span>
+                            <span class="bg-gray-800 text-gray-400 text-xs px-2 py-1 rounded">Thế giới</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-white group-hover:text-yellow-400 transition mb-2">
+                            Giá vàng thế giới tăng mạnh do USD suy yếu
+                        </h3>
+                        <p class="text-sm text-gray-500 line-clamp-2 mb-4">
+                            Giá vàng giao ngay tăng 1.2% lên mức kỷ lục mới trong phiên sáng nay, được hỗ trợ bởi chỉ số DXY giảm mạnh sau tin tức kinh tế Mỹ.
+                        </p>
+                        <div class="flex justify-between text-xs text-gray-600">
+                            <span><i class="fa-regular fa-clock mr-1"></i> 2 giờ trước</span>
+                            <span>Nguồn: Investing.com</span>
+                        </div>
                     </div>
-                    <h3 class="text-lg font-bold text-white group-hover:text-yellow-400 transition mb-2">
-                        Giá vàng thế giới tăng mạnh do USD suy yếu
-                    </h3>
-                    <p class="text-sm text-gray-500 line-clamp-2 mb-4">
-                        Giá vàng giao ngay tăng 1.2% lên mức kỷ lục mới trong phiên sáng nay, được hỗ trợ bởi chỉ số DXY giảm mạnh sau tin tức kinh tế Mỹ.
-                    </p>
-                    <div class="flex justify-between text-xs text-gray-600">
-                        <span><i class="fa-regular fa-clock mr-1"></i> 2 giờ trước</span>
-                        <span>Nguồn: Investing.com</span>
+
+                    <div class="bg-[#111] border border-gray-800 p-6 rounded-2xl hover:border-yellow-500/50 transition cursor-pointer group">
+                        <div class="flex gap-2 mb-3">
+                            <span class="bg-yellow-500/20 text-yellow-500 text-xs px-2 py-1 rounded font-bold">Trong nước</span>
+                            <span class="bg-gray-800 text-gray-400 text-xs px-2 py-1 rounded">SJC</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-white group-hover:text-yellow-400 transition mb-2">
+                            NHNN tiếp tục đấu thầu vàng miếng SJC để bình ổn
+                        </h3>
+                        <p class="text-sm text-gray-500 line-clamp-2 mb-4">
+                            Ngân hàng Nhà nước thông báo phiên đấu thầu thứ 5 sẽ diễn ra vào sáng mai nhằm tăng cung cho thị trường và giảm chênh lệch giá.
+                        </p>
+                        <div class="flex justify-between text-xs text-gray-600">
+                            <span><i class="fa-regular fa-clock mr-1"></i> 4 giờ trước</span>
+                            <span>Nguồn: CafeF</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <footer class="bg-black border-t border-gray-900 pt-16 pb-8">
+            <div class="max-w-6xl mx-auto px-4">
+                <div class="grid md:grid-cols-3 gap-12 mb-12">
+                    <div>
+                        <div class="flex items-center gap-2 mb-4">
+                            <i class="fa-solid fa-layer-group text-yellow-500 text-xl"></i>
+                            <h4 class="text-2xl font-bold text-white">Gold<span class="text-yellow-500">Insight</span></h4>
+                        </div>
+                        <p class="text-gray-500 text-sm leading-relaxed mb-6">
+                            Nền tảng phân tích dữ liệu giá vàng và hỗ trợ đầu tư thông minh. Dữ liệu được cập nhật Real-time từ các nguồn uy tín.
+                        </p>
+                        <div class="flex gap-4">
+                            <a href="#" class="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center text-gray-400 hover:bg-yellow-500 hover:text-black transition"><i class="fa-brands fa-facebook-f"></i></a>
+                            <a href="#" class="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center text-gray-400 hover:bg-yellow-500 hover:text-black transition"><i class="fa-brands fa-telegram"></i></a>
+                            <a href="#" class="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center text-gray-400 hover:bg-yellow-500 hover:text-black transition"><i class="fa-brands fa-github"></i></a>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 class="text-white font-bold mb-6 text-lg">Liên Kết</h4>
+                        <ul class="space-y-3 text-sm text-gray-500">
+                            <li><a href="#" class="hover:text-yellow-400 transition">Về chúng tôi</a></li>
+                            <li><a href="#" class="hover:text-yellow-400 transition">Liên hệ & Hợp tác</a></li>
+                            <li><a href="#" class="hover:text-yellow-400 transition">Điều khoản sử dụng</a></li>
+                            <li><a href="#" class="hover:text-yellow-400 transition">Chính sách bảo mật</a></li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h4 class="text-white font-bold mb-6 text-lg">Lưu Ý Quan Trọng</h4>
+                        <p class="text-gray-500 text-sm leading-relaxed border-l-2 border-gray-700 pl-4">
+                            Thông tin trên website chỉ mang tính chất tham khảo, không phải là lời khuyên đầu tư tài chính. 
+                            Giá vàng có thể thay đổi bất kỳ lúc nào theo biến động thị trường. Vui lòng cân nhắc kỹ trước khi xuống tiền.
+                        </p>
                     </div>
                 </div>
 
-                <div class="bg-[#111] border border-gray-800 p-6 rounded-2xl hover:border-yellow-500/50 transition cursor-pointer group">
-                    <div class="flex gap-2 mb-3">
-                        <span class="bg-yellow-500/20 text-yellow-500 text-xs px-2 py-1 rounded font-bold">Trong nước</span>
-                        <span class="bg-gray-800 text-gray-400 text-xs px-2 py-1 rounded">SJC</span>
-                    </div>
-                    <h3 class="text-lg font-bold text-white group-hover:text-yellow-400 transition mb-2">
-                        NHNN tiếp tục đấu thầu vàng miếng SJC để bình ổn
-                    </h3>
-                    <p class="text-sm text-gray-500 line-clamp-2 mb-4">
-                        Ngân hàng Nhà nước thông báo phiên đấu thầu thứ 5 sẽ diễn ra vào sáng mai nhằm tăng cung cho thị trường và giảm chênh lệch giá.
-                    </p>
-                    <div class="flex justify-between text-xs text-gray-600">
-                        <span><i class="fa-regular fa-clock mr-1"></i> 4 giờ trước</span>
-                        <span>Nguồn: CafeF</span>
-                    </div>
+                <div class="border-t border-gray-900 pt-8 text-center text-gray-600 text-xs">
+                    <p>&copy; 2026 GoldInsight. All rights reserved. Built with <i class="fa-solid fa-heart text-red-900"></i>.</p>
                 </div>
             </div>
-        </section>
-
-    </main>
-
-    <footer class="bg-black border-t border-gray-900 pt-16 pb-8">
-        <div class="max-w-6xl mx-auto px-4">
-            <div class="grid md:grid-cols-3 gap-12 mb-12">
-                <div>
-                    <div class="flex items-center gap-2 mb-4">
-                        <i class="fa-solid fa-layer-group text-yellow-500 text-xl"></i>
-                        <h4 class="text-2xl font-bold text-white">Gold<span class="text-yellow-500">Insight</span></h4>
-                    </div>
-                    <p class="text-gray-500 text-sm leading-relaxed mb-6">
-                        Nền tảng phân tích dữ liệu giá vàng và hỗ trợ đầu tư thông minh hàng đầu Việt Nam. Dữ liệu được cập nhật Real-time từ các nguồn uy tín.
-                    </p>
-                    <div class="flex gap-4">
-                        <a href="#" class="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center text-gray-400 hover:bg-yellow-500 hover:text-black transition"><i class="fa-brands fa-facebook-f"></i></a>
-                        <a href="#" class="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center text-gray-400 hover:bg-yellow-500 hover:text-black transition"><i class="fa-brands fa-telegram"></i></a>
-                        <a href="#" class="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center text-gray-400 hover:bg-yellow-500 hover:text-black transition"><i class="fa-brands fa-github"></i></a>
-                    </div>
-                </div>
-
-                <div>
-                    <h4 class="text-white font-bold mb-6 text-lg">Liên Kết</h4>
-                    <ul class="space-y-3 text-sm text-gray-500">
-                        <li><a href="#" class="hover:text-yellow-400 transition">Về chúng tôi</a></li>
-                        <li><a href="#" class="hover:text-yellow-400 transition">Liên hệ & Hợp tác</a></li>
-                        <li><a href="#" class="hover:text-yellow-400 transition">Điều khoản sử dụng</a></li>
-                        <li><a href="#" class="hover:text-yellow-400 transition">Chính sách bảo mật</a></li>
-                    </ul>
-                </div>
-
-                <div>
-                    <h4 class="text-white font-bold mb-6 text-lg">Lưu Ý Quan Trọng</h4>
-                    <p class="text-gray-500 text-sm leading-relaxed border-l-2 border-gray-700 pl-4">
-                        Thông tin trên website chỉ mang tính chất tham khảo, không phải là lời khuyên đầu tư tài chính. 
-                        Giá vàng có thể thay đổi bất kỳ lúc nào theo biến động thị trường. Vui lòng cân nhắc kỹ trước khi xuống tiền.
-                    </p>
-                </div>
-            </div>
-
-            <div class="border-t border-gray-900 pt-8 text-center text-gray-600 text-xs">
-                <p>&copy; 2026 GoldInsight. All rights reserved. Built with <i class="fa-solid fa-heart text-red-900"></i> by You.</p>
-            </div>
-        </div>
-    </footer>
-    <script>
-        // --- CẤU HÌNH ---
-        const API_URL = "https://goldsight-jwvk.onrender.com/gia-vang";
-
-        // Hàm định dạng tiền tệ
-        const formatMoney = (price, currency = 'VND') => {
-            if (!price) return "N/A";
-            const options = currency === 'USD' 
-                ? { style: 'currency', currency: 'USD' } 
-                : { style: 'currency', currency: 'VND' };
-            return new Intl.NumberFormat('vi-VN', options).format(price);
-        }
-
-        // Hàm tạo HTML hiển thị tăng/giảm (Dùng cho cả Mua và Bán)
-        const getTrendHtml = (change) => {
-            if (!change || change === 0) return '';
-            const isUp = change > 0;
-            const colorClass = isUp ? 'text-green-500' : 'text-red-500';
-            const bgClass = isUp ? 'bg-green-500/10' : 'bg-red-500/10';
-            const icon = isUp ? '▲' : '▼';
-            
-            // Format số change, bỏ ký tự '₫' để gọn
-            const formattedChange = formatMoney(Math.abs(change)).replace('₫','').trim();
-
-            return `<span class="${colorClass} ${bgClass} text-[10px] ml-2 px-1 rounded font-bold inline-block">
-                        ${icon} ${formattedChange}
-                    </span>`;
-        }
-
-        async function fetchPrices() {
-            try {
-                // Gọi API
-                const res = await fetch(API_URL);
-                const jsonData = await res.json();
-
-                // --- XỬ LÝ DỮ LIỆU ---
-                let pricesObj = {};
-                
-                // Kiểm tra cấu trúc dữ liệu trả về từ Render
-                if (jsonData.raw_response && jsonData.raw_response.prices) {
-                    pricesObj = jsonData.raw_response.prices;
-                } else if (jsonData.data && Array.isArray(jsonData.data)) {
-                    jsonData.data.forEach(item => {
-                        pricesObj[item.code] = item;
-                    });
-                }
-
-                // 1. CẬP NHẬT GIÁ VÀNG THẾ GIỚI (XAUUSD)
-                const worldGold = pricesObj["XAUUSD"];
-                if (worldGold) {
-                    document.getElementById("xauusd-price").innerHTML = `
-                        ${formatMoney(worldGold.buy, 'USD')}
-                    `;
-                    
-                    const change = worldGold.change_buy || 0;
-                    const changeColor = change >= 0 ? 'text-green-500' : 'text-red-500';
-                    const changeIcon = change >= 0 ? '<i class="fa-solid fa-arrow-trend-up"></i>' : '<i class="fa-solid fa-arrow-trend-down"></i>';
-                    
-                    document.getElementById("xauusd-change").innerHTML = `
-                        <span class="${changeColor} bg-gray-900 px-3 py-1 rounded-full border border-gray-700">
-                            ${changeIcon} ${change.toFixed(2)} USD
-                        </span>
-                    `;
-
-                    const timeUpdate = jsonData.raw_response ? (jsonData.raw_response.time + " " + jsonData.raw_response.date) : "Vừa xong";
-                    document.getElementById("xauusd-time").innerText = "Cập nhật lúc: " + timeUpdate;
-                }
-
-                // 2. CẬP NHẬT BẢNG GIÁ VÀNG TRONG NƯỚC
-                const tbody = document.getElementById("gold-table");
-                tbody.innerHTML = "";
-
-                Object.entries(pricesObj).forEach(([code, item]) => {
-                    // Bỏ qua XAUUSD và các item lỗi không có tên
-                    if (code === 'XAUUSD' || !item.name) return;
-
-                    // Xử lý mũi tên tăng giảm cho cả Mua và Bán
-                    const buyTrend = getTrendHtml(item.change_buy);
-                    const sellTrend = getTrendHtml(item.change_sell);
-
-                    const spread = (item.sell - item.buy);
-
-                    const row = `
-                    <tr class="hover:bg-gray-800/50 transition duration-200 border-b border-gray-800/50 last:border-0">
-                        <td class="p-3">
-                            <div class="font-bold text-white text-base">${item.name}</div>
-                            <div class="text-gray-500 text-xs font-mono mt-0.5">${code}</div>
-                        </td>
-                        
-                        <td class="p-3 text-right font-mono text-white">
-                            ${formatMoney(item.buy)}
-                            <div class="mt-0.5">${buyTrend}</div>
-                        </td>
-                        
-                        <td class="p-3 text-right font-mono text-white">
-                            ${formatMoney(item.sell)}
-                            <div class="mt-0.5">${sellTrend}</div>
-                        </td>
-                        
-                        <td class="p-3 text-right font-mono text-gray-400 text-sm">
-                            ${formatMoney(spread)}
-                        </td>
-                    </tr>`;
-                    tbody.innerHTML += row;
-                });
-
-            } catch (error) {
-                console.error("Lỗi kết nối Backend:", error);
-                document.getElementById("xauusd-time").innerText = "Đang kết nối lại...";
-            }
-        }
-
-        // Chạy lần đầu
-        fetchPrices();
-        // Tự động cập nhật mỗi 30 giây
-        setInterval(fetchPrices, 30000);
-    </script>
-
-</body>
-</html>
+        </footer>
+        <script src="./main.js" defer></script>
+    </body>
+    </html>

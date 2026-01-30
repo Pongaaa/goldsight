@@ -1,0 +1,39 @@
+body {
+    font-family: 'Inter', sans-serif;
+}
+
+/* Card Glow */
+.card-glow {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(234, 179, 8, 0.2);
+    transition: all 0.3s ease;
+}
+
+.card-glow:hover {
+    border-color: rgba(234, 179, 8, 0.6);
+    box-shadow: 0 0 30px rgba(234, 179, 8, 0.15);
+    transform: translateY(-2px);
+}
+
+/* AI Badge */
+.ai-badge {
+    background: linear-gradient(90deg, #1f2937 0%, #374151 100%);
+    border: 1px solid #4b5563;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: #1a1a1a;
+}
+::-webkit-scrollbar-thumb {
+    background: #444;
+    border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #ca8a04;
+}
